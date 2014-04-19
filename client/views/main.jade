@@ -1,0 +1,46 @@
+head
+  title HTML to Jade
+
+body
+  +main
+
+template(name="main")    
+  .header
+    .navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          a.navbar-brand(href="") HTML to Jade
+        .meteor-switch
+          .checkbox
+            label
+              input#meteor-check(type='checkbox', checked="#{mcheck}")
+              | Meteor JS
+          
+          
+    img(style='position: absolute; top: 0; right: 0; border: 0; z-index: 50;', src='http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png', alt='Fork me on GitHub')
+
+  .main
+    .container-fluid.fit-h
+      .row-fluid.fit-h
+        .span6.fit-h
+          textarea#editor-html.editor.fit-h(wrap="off", placeholder="Paste HTML code here")
+        .span6.fit-h
+          textarea#editor-jade.editor.fit-h(wrap="off", placeholder="Converted Jade code shown here")
+        
+  .footer      
+    .container-fluid
+      .row-fluid
+        .span12
+          .pull-left 
+            h5
+              | Powered by 
+              a(href="https://vida.io", target="_blank") VIDA.IO
+              | , 
+              a(href="https://meteor.com", target="_blank") Meteor JS
+              | , and 
+              a(href="https://github.com/donpark/html2jade", target="_blank") HTML2JADE
+              
+          .pull-right
+            h5
+              | Theme by 
+              a(href="http://bootswatch.com/flatly/", target="_blank") Bootswatch Flatfly
