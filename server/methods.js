@@ -3,7 +3,7 @@ Meteor.methods({
     
     Future = Meteor.require('fibers/future')
     
-    var html2jade = Npm.require('html2jade');
+    var html2jade = Meteor.require('html2jade');
     var fut = new Future()
     
     html2jade.convertHtml(html, {double: true, doNotEncode: true}, function (err, jade) {
