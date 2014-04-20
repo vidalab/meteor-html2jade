@@ -1,5 +1,6 @@
 head
   title HTML to Jade
+  link(href='https://fonts.googleapis.com/css?family=Inconsolata', rel='stylesheet', type='text/css')
 
 body
   +main
@@ -14,16 +15,16 @@ template(name="main")
           .checkbox
             label
               input#meteor-check(type='checkbox', checked="#{mcheck}")
-              | Meteor JS
+              span(rel="tooltip", title="Escape some Meteor JS Handlebars Tags") Meteor JS
           
     a(href="https://github.com/sangd/html-to-jade", target="_blank")      
-     img(style='position: absolute; top: 0; right: 0; border: 0; z-index: 50;', src='http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png', alt='Fork me on GitHub')
+     img(style='position: absolute; top: 0; right: 0; border: 0; z-index: 50;', src='http://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png', alt='Fork me on GitHub')
 
   .main
     .container-fluid.fit-h
       .row-fluid.fit-h
         .span6.fit-h
-          textarea#editor-html.editor.fit-h(wrap="off", placeholder="Paste HTML code here")
+          textarea#editor-html.editor.fit-h(wrap="off", placeholder="Paste/Type HTML code here")
         .span6.fit-h
           textarea#editor-jade.editor.fit-h(wrap="off", placeholder="Converted Jade code shown here")
         
@@ -42,5 +43,5 @@ template(name="main")
               
           .pull-right
             h5
-              | Theme by 
               a(href="http://bootswatch.com/flatly/", target="_blank") Bootswatch Flatfly
+              |  Theme

@@ -2,6 +2,7 @@ METEOR_CHECK = 'meteorCheck'
 
 Meteor.startup(function (){
   Session.set(METEOR_CHECK, true)
+  $('[rel="tooltip"]').tooltip({placement: 'right'})
 })
 
 Template.main.events({
@@ -9,9 +10,9 @@ Template.main.events({
     var html = $(e.currentTarget).val(),
         mcheck = Session.get(METEOR_CHECK)
         
-    Meteor.call('html2jade', html, mcheck, function (err, jade){
+    Meteor.call('html2jade', html, mcheck, function (err, result){
       if (!err) { 
-        $('#editor-jade').val(jade)
+        $('#editor-jade').val(result)
       } else {
       }      
     })
