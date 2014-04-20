@@ -1,4 +1,4 @@
-## HTML to Jade Converter with Meteor Handlebars support
+## HTML to Jade Meteor JS app with Handlebars support
 Convert HTML to Jade, process Meteor Handlebars tags (no spacing in between):
 + open tag '{{#'
 + close tag '/}}
