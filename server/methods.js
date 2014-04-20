@@ -27,7 +27,6 @@ function JadeBlock(html, jade) {
 
 JadeBlock.prototype.filterHandlebars = function (){
   var jade = this.jade.match(/[^\r\n]+/g),
-      paddings = [],
       result = ''
   
   // Remove extra html/body tags & preceding 4 spaces
@@ -39,69 +38,72 @@ JadeBlock.prototype.filterHandlebars = function (){
     })    
   }
   
+  var level = 0
   _.each(jade, function (line){
-    var newLine = new JadeLine(line, jade)
+    var newLine = new JadeLine(line, level)
     result += newLine.preProcess()
-                      .closeTag()
-                      .elseTag()
-                      .openTag()
-                      .embedTemplateTag()  
+                      .tagFilters() 
                       .postProcess()
                       .line
+    level = newLine.newLevel                    
   })
   
   return result
 }
 
-function JadeLine(line, jade) {
+function JadeLine(line, level) {
   this.line = line   
-  this.jade = jade 
+  this.level = level 
+  this.newLevel = level
 }
 
 JadeLine.prototype.preProcess = function (){
   return this  
 }
 
-JadeLine.prototype.openTag = function (){  
-  if (this.line.indexOf('{{#') > -1) {
+JadeLine.prototype.tagFilters = function (){
+  
+  if (this.line.indexOf('| {{#') > -1) {
+    // Open tag
     var p1 = this.line.indexOf('#'),
         p2 = this.line.indexOf(' ', p1)
     this.tag = this.line.substring(p1+1, p2)
+    this.newLevel += 1
     this.line = this.line.replace('| {{#', '')
                          .replace('}}','')
-  }
-  return this
-}
-
-JadeLine.prototype.closeTag = function (){
-  if (this.line.indexOf('{{/')  > -1) {
+  } else if (this.line.indexOf('| {{/')  > -1) {
+    // Close tag
     var p1 = this.line.indexOf('/'),
         p2 = this.line.indexOf(' ', p1)
     this.tag = this.line.substring(p1+1, p2)
+    this.newLevel -= 1
     this.line = ''
-  }
-  return this
-}
-
-JadeLine.prototype.elseTag = function (){
-  if (this.line.indexOf('{{else}}')  > -1) {
+  } else if (this.line.indexOf('| {{else}}')  > -1) {
+    // else tag
     this.line = this.line.replace('| {{','')
                           .replace('}}','')
-  }
-  return this
-}
-
-JadeLine.prototype.embedTemplateTag = function (){
-  if (this.line.indexOf('| {{&#62; ') > -1) {    
+  } else if (this.line.indexOf('| {{&#62; ') > -1) {    
+    // Embed template tag
     this.line = this.line.replace('| {{&#62; ', '+')
                           .replace('}}','')
   }
+  
   return this
 }
 
 JadeLine.prototype.postProcess = function (){
+  if (this.level) {    
+    this.padLine()
+  }
   if (this.line.length) {
     this.line = this.line + '\r\n'
   }
   return this
+}
+
+JadeLine.prototype.padLine = function () {
+  var level = this.level
+  while (level-- > 0) {
+    this.line = '  ' + this.line
+  }
 }
