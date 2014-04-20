@@ -91,7 +91,7 @@ BlockLine.prototype.getNewBlockStartLine = function(){
   var newLine = ''
   if (this.startBlock) {
     newLine = this.line
-                    .replace('| {{#', '')
+                    .replace('  | {{#', '')
                     .replace('}}','')
     
   } else if (this.templateTag) {

@@ -13,15 +13,22 @@ Template.main.events({
     Meteor.call('html2jade', html, mcheck, function (err, result){
       if (!err) { 
         $('#editor-jade').val(result)
-      } else {
-      }      
+      }    
     })
     
     e.preventDefault()
   },
   'click #meteor-check': function (e, tmpl) {
-    var mcheck = Session.get(METEOR_CHECK)
+    var html = $('#editor-html').val(),
+        mcheck = Session.get(METEOR_CHECK)
+        
     Session.set(METEOR_CHECK, !mcheck)
+    
+    Meteor.call('html2jade', html, !mcheck, function (err, result){
+      if (!err) { 
+        $('#editor-jade').val(result)
+      }    
+    })
   }
 })
 
