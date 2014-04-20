@@ -7,7 +7,7 @@ Meteor.methods({
     var html2jade = Meteor.require('html2jade')
     var fut = new Future()
     
-    html2jade.convertHtml(html, {double: true, doNotEncode: true}, function (err, jade) {
+    html2jade.convertHtml(html, {double: true, donotencode: true}, function (err, jade) {
       if (mcheck) {
         jade = new JadeBlock(html, jade)
         fut.return(jade.filterHandlebars())
@@ -47,6 +47,9 @@ JadeBlock.prototype.filterHandlebars = function (){
                       .line
     level = newLine.newLevel                    
   })
+  
+  result = result.replace(/&#62; /g, '+')
+  result = result.replace(/&#34;/g, '"')
   
   return result
 }
@@ -97,7 +100,7 @@ JadeLine.prototype.postProcess = function (){
   }
   if (this.line.length) {
     this.line = this.line + '\r\n'
-  }
+  }  
   return this
 }
 
