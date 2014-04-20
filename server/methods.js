@@ -8,101 +8,100 @@ Meteor.methods({
     var fut = new Future()
     
     html2jade.convertHtml(html, {double: true, doNotEncode: true}, function (err, jade) {
-      var hasHtmlTag = (html.indexOf('<html>') > -1) ? true : false,
-          hasBodyTag = (html.indexOf('<body>') > -1) ? true : false
-      
       if (mcheck) {
-        
-        var result = '',
-            lines = jade.match(/[^\r\n]+/g),
-            middleOfBlock = []
-        
-        _.each(lines, function (line){
-          
-          var newLine = new BlockLine(line)
-
-          // Shift block spaces
-          if (newLine.startBlock) {
-            middleOfBlock.push('  ')
-          } else if (newLine.endBlock) {
-            middleOfBlock.pop()
-          }
-          
-          if (newLine.startBlock || newLine.templateTag || newLine.elseBlock) {
-            result += newLine.getNewBlockStartLine() + '\r\n'
-          } else if (newLine.endBlock) {
-            // remove end block & else tag lines
-          } else if (!hasHtmlTag && newLine.line.replace(' ', '').indexOf('html') > -1){
-            // remove html
-          } else if (!hasBodyTag && newLine.line.replace(' ', '').indexOf('body') > -1){
-            // remove body
-          } else {
-            
-            if (middleOfBlock.length > 0) {
-              // Buffer leading spaces within middle of blocks
-              line = middleOfBlock.join('') + line
-            }
-            if (!hasHtmlTag && !hasBodyTag) {
-              line = line.substring(4, line.length)
-            }
-            
-            result += line  + '\r\n'         
-          }       
-        })
-        fut.return(result)
+        jade = new JadeBlock(html, jade)
+        fut.return(jade.filterHandlebars())
       } else {
         fut.return(jade)
-      } 
-      
+      }      
     })
     
     return fut.wait()
   }
 })
 
-function BlockLine(line){ 
-  this.line = line
-  this.openPos = line.indexOf('{{')
-  this.closePos = line.indexOf('}}')
-  
-  this.startBlock = false
-  this.endBlock = false  
-  this.elseBlock = false
-
-  if (line.indexOf('{{#') > -1) {
-    var p1 = line.indexOf('#'),
-        p2 = line.indexOf(' ', p1)
-    this.blockTag = line.substring(p1+1, p2)
-    this.startBlock  = true
-    
-  } else if (line.indexOf('{{/')  > -1) {
-    var p1 = line.indexOf('/'),
-        p2 = line.indexOf(' ', p1)
-    this.blockTag = line.substring(p1+1, p2)
-    this.endBlock = true
-  } else if (line.indexOf('{{else}}')  > -1) {
-    this.elseBlock = true
-  } else if (line.indexOf('| {{&#62; ') > -1) {    
-    this.templateTag = true
-  }
-
+function JadeBlock(html, jade) {
+  this.html = html
+  this.jade = jade
 }
 
-BlockLine.prototype.getNewBlockStartLine = function(){
-  var newLine = ''
-  if (this.startBlock) {
-    newLine = this.line
-                    .replace('  | {{#', '')
-                    .replace('}}','')
-    
-  } else if (this.templateTag) {
-    newLine = this.line
-                    .replace('| {{&#62; ', '+')
-                    .replace('}}','')
-  } else if (this.elseBlock){
-    newLine = this.line
-                    .replace('| {{','')
-                    .replace('}}','')
+JadeBlock.prototype.filterHandlebars = function (){
+  var jade = this.jade.match(/[^\r\n]+/g),
+      paddings = [],
+      result = ''
+  
+  // Remove extra html/body tags & preceding 4 spaces
+  if (this.html.indexOf('<html>') === -1) {
+    jade.splice(0, 2) // Remove html & body
+    _.each(jade, function (e, i, arr) {
+      
+      arr[i] = e.substring(4, e.length)
+    })    
   }
-  return newLine
+  
+  _.each(jade, function (line){
+    var newLine = new JadeLine(line, jade)
+    result += newLine.preProcess()
+                      .closeTag()
+                      .elseTag()
+                      .openTag()
+                      .embedTemplateTag()  
+                      .postProcess()
+                      .line
+  })
+  
+  return result
+}
+
+function JadeLine(line, jade) {
+  this.line = line   
+  this.jade = jade 
+}
+
+JadeLine.prototype.preProcess = function (){
+  return this  
+}
+
+JadeLine.prototype.openTag = function (){  
+  if (this.line.indexOf('{{#') > -1) {
+    var p1 = this.line.indexOf('#'),
+        p2 = this.line.indexOf(' ', p1)
+    this.tag = this.line.substring(p1+1, p2)
+    this.line = this.line.replace('| {{#', '')
+                         .replace('}}','')
+  }
+  return this
+}
+
+JadeLine.prototype.closeTag = function (){
+  if (this.line.indexOf('{{/')  > -1) {
+    var p1 = this.line.indexOf('/'),
+        p2 = this.line.indexOf(' ', p1)
+    this.tag = this.line.substring(p1+1, p2)
+    this.line = ''
+  }
+  return this
+}
+
+JadeLine.prototype.elseTag = function (){
+  if (this.line.indexOf('{{else}}')  > -1) {
+    this.line = this.line.replace('| {{','')
+                          .replace('}}','')
+  }
+  return this
+}
+
+JadeLine.prototype.embedTemplateTag = function (){
+  if (this.line.indexOf('| {{&#62; ') > -1) {    
+    this.line = this.line.replace('| {{&#62; ', '+')
+                          .replace('}}','')
+  }
+  return this
+}
+
+JadeLine.prototype.postProcess = function (){
+  if (this.line.length) {
+    this.line = this.line + '\r\n'
+  }
+  return this
 }
