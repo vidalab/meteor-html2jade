@@ -354,6 +354,51 @@
           }
         }
       }
+    },
+    "htmlparser2": {
+      "version": "3.7.1",
+      "dependencies": {
+        "domhandler": {
+          "version": "2.2.0"
+        },
+        "domutils": {
+          "version": "1.4.3"
+        },
+        "domelementtype": {
+          "version": "1.1.1"
+        },
+        "readable-stream": {
+          "version": "1.1.13-1",
+          "dependencies": {
+            "core-util-is": {
+              "version": "1.0.1"
+            },
+            "isarray": {
+              "version": "0.0.1"
+            },
+            "string_decoder": {
+              "version": "0.10.25-1"
+            },
+            "inherits": {
+              "version": "2.0.1"
+            }
+          }
+        },
+        "entities": {
+          "version": "1.0.0"
+        }
+      }
+    },
+    "contextify": {
+      "version": "0.1.7",
+      "dependencies": {
+        "bindings": {
+          "version": "1.2.0"
+        },
+        "nan": {
+          "version": "0.8.0"
+        }
+      }
     }
   }
 }

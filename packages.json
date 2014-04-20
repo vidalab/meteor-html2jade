@@ -4,5 +4,7 @@
   "html2jade":"0.6.2",
   "commander": "2.2.0",
   "ent": "2.0.0",
-  "jsdom": "0.10.5"
+  "jsdom": "0.10.5",
+  "htmlparser2": "3.7.1",
+  "contextify": "0.1.7"
 }
