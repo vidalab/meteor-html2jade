@@ -29,12 +29,18 @@ function convertHtml() {
   var html = $('#editor-html').val(),
       mcheck = Session.get(METEOR_CHECK)
       
-  $('#flash-message').show()
+  $('.flash-message.label-info').show()
   htmlCopy = html
   Meteor.call('html2jade', html, mcheck, function (err, result){
     if (!err) { 
       $('#editor-jade').val(result)
-      $('#flash-message').hide()
-    }    
+    } else {
+      console.log(err)
+      $('.flash-message.label-danger').show()
+      setTimeout(function (){
+        $('.flash-message.label-danger').hide()
+      }, 3000)      
+    }
+    $('.flash-message.label-info').hide()
   })
 }

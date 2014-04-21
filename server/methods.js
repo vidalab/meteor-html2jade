@@ -103,12 +103,14 @@ JadeLine.prototype.tagFilters = function (){
 }
 
 JadeLine.prototype.postProcess = function (){
-  if (this.level) {    
-    this.padLine()
-  }
-  if (this.line.length) {
-    this.line = this.line + '\r\n'
-  }  
+  if (this.line.length > 0) {
+    if (this.level) {    
+      this.padLine()
+    }
+    if (this.line.length) {
+      this.line = this.line + '\r\n'
+    }
+  }    
   return this
 }
 
