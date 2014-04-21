@@ -28,7 +28,7 @@
 
   //configure environmental
   "env": {
-    "PORT": 80,
+    "PORT": 8080,
     "ROOT_URL": "http://meteor-html2jade.vida.io",
     "MONGO_URL": "",
     "MAIL_URL": ""
