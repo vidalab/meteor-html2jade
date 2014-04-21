@@ -30,7 +30,7 @@
   "env": {
     "PORT": 8080,
     "ROOT_URL": "http://meteor-html2jade.vida.io",
-    "MONGO_URL": "mongodb://user:pass@host:port/dbname",
+    "MONGO_URL": "mongodb://vida_io:Gobi3Dolton@localhost:27017/meteor-html2jade",
     "MAIL_URL": ""
   },
 
