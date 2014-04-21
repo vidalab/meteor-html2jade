@@ -5,7 +5,7 @@
       "host": "aws.vida.io",
       "username": "ubuntu",
       //or pem file (ssh based authentication)
-      "pem": "/Users/phuoc/Documents/Workspace/vida_lab/vida_io_key.pem"
+      "pem": "~/.ssh/id_rsa"
     }
   ],
 
