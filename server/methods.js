@@ -8,11 +8,21 @@ Meteor.methods({
     var fut = new Future()
     
     html2jade.convertHtml(html, {double: true, donotencode: true}, function (err, jade) {
+      jadeArr = jade.match(/[^\r\n]+/g)
+      
+      // Remove extra html/body tags & preceding 4 spaces
+      if (html.indexOf('<html') === -1) {
+        jadeArr.splice(0, 2) // Remove html & body
+        _.each(jadeArr, function (e, i, arr) {
+          arr[i] = e.substring(4, e.length)
+        })    
+      }
+      
       if (mcheck) {
-        jade = new JadeBlock(html, jade)
+        jade = new JadeBlock(html, jadeArr)
         fut.return(jade.filterHandlebars())
       } else {
-        fut.return(jade)
+        fut.return(jadeArr.join('\r\n'))
       }      
     })
     
@@ -20,27 +30,17 @@ Meteor.methods({
   }
 })
 
-function JadeBlock(html, jade) {
+function JadeBlock(html, jadeArr) {
   this.html = html
-  this.jade = jade
+  this.jadeArr = jadeArr
 }
 
 JadeBlock.prototype.filterHandlebars = function (){
-  var jade = this.jade.match(/[^\r\n]+/g),
-      result = ''
-  
-  // Remove extra html/body tags & preceding 4 spaces
-  if (this.html.indexOf('<html>') === -1) {
-    jade.splice(0, 2) // Remove html & body
-    _.each(jade, function (e, i, arr) {
-      
-      arr[i] = e.substring(4, e.length)
-    })    
-  }
+  var result = ''
   
   var level = 0,
       lineBefore = ''
-  _.each(jade, function (line){
+  _.each(this.jadeArr, function (line){
     var newLine = new JadeLine(line, level, lineBefore)
     result += newLine.preProcess()
                       .tagFilters() 

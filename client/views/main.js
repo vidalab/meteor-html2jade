@@ -3,7 +3,7 @@ var htmlCopy = null
 
 Meteor.startup(function (){
   Session.set(METEOR_CHECK, true)  
-  $('[rel="tooltip"]').tooltip({placement: 'right'})  
+  $('[rel="tooltip"]').tooltip({placement: 'bottom'})  
 })
 
 Template.main.events({
@@ -28,9 +28,13 @@ Template.main.helpers({
 function convertHtml() {
   var html = $('#editor-html').val(),
       mcheck = Session.get(METEOR_CHECK)
+  
+  if (!html.length) return
       
   $('.flash-message.label-info').show()
+  
   htmlCopy = html
+  
   Meteor.call('html2jade', html, mcheck, function (err, result){
     if (!err) { 
       $('#editor-jade').val(result)
