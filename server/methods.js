@@ -38,26 +38,29 @@ JadeBlock.prototype.filterHandlebars = function (){
     })    
   }
   
-  var level = 0
+  var level = 0,
+      lineBefore = ''
   _.each(jade, function (line){
-    var newLine = new JadeLine(line, level)
+    var newLine = new JadeLine(line, level, lineBefore)
     result += newLine.preProcess()
                       .tagFilters() 
                       .postProcess()
                       .line
-    level = newLine.newLevel                    
+    level = newLine.newLevel
+    lineBefore = line
   })
   
-  result = result.replace(/&#62; /g, '+')
-  result = result.replace(/&#34;/g, '"')
+  result =  result.replace(/&#34;/g, '"')
+                  .replace(/&#39;/g, '"')
   
   return result
 }
 
-function JadeLine(line, level) {
+function JadeLine(line, level, lineBefore) {
   this.line = line   
   this.level = level 
   this.newLevel = level
+  this.lineBefore = lineBefore
 }
 
 JadeLine.prototype.preProcess = function (){
@@ -83,11 +86,16 @@ JadeLine.prototype.tagFilters = function (){
     this.line = ''
   } else if (this.line.indexOf('| {{else}}')  > -1) {
     // else tag
-    this.line = this.line.replace('| {{','')
+    this.line = this.line.replace('  | {{','')
                           .replace('}}','')
   } else if (this.line.indexOf('| {{&#62; ') > -1) {    
     // Embed template tag
     this.line = this.line.replace('| {{&#62; ', '+')
+                          .replace('}}','')
+  } else if (this.line.indexOf('{{&#62; ') > -1) {    
+    // Inline template tag
+    var leadingSpaces = this.getLeadingSpaces(this.lineBefore) + '  ' 
+    this.line = this.line.replace('{{&#62; ', '\r\n' + leadingSpaces + '+')
                           .replace('}}','')
   }
   
@@ -109,4 +117,13 @@ JadeLine.prototype.padLine = function () {
   while (level-- > 0) {
     this.line = '  ' + this.line
   }
+}
+
+JadeLine.prototype.getLeadingSpaces = function (str) {
+  var n = str.match(/^\s{0,9999}/)[0].length,
+      result = ''
+  while (n-- > 0) {
+    result += ' '
+  }
+  return result
 }
