@@ -31,7 +31,8 @@
     "PORT": 8080,
     "ROOT_URL": "http://html2jade.vida.io",
     "MONGO_URL": "mongodb://vida_io:Gobi3Dolton@localhost:27017/meteor-html2jade",
-    "MAIL_URL": ""
+    "MAIL_URL": "",
+    "DISABLE_WEBSOCKETS": true
   },
 
   //meteor-up checks if the app comes online just after the deployment
