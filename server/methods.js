@@ -36,18 +36,25 @@ function JadeBlock(html, jadeArr) {
 }
 
 JadeBlock.prototype.filterHandlebars = function (){
-  var result = ''
-  
-  var level = 0,
-      lineBefore = ''
+  var result = '', 
+      level = 0,
+      lineBefore = '',
+      markdownBlock = false
+
   _.each(this.jadeArr, function (line){
-    var newLine = new JadeLine(line, level, lineBefore)
+    var newLine = new JadeLine(line, {
+                          level: level, 
+                          lineBefore: lineBefore, 
+                          markdownBlock: markdownBlock
+                      })
     result += newLine.preProcess()
                       .tagFilters() 
                       .postProcess()
                       .line
-    level = newLine.newLevel
+                      
     lineBefore = line
+    level = newLine.newLevel    
+    markdownBlock = newLine.markdownBlock
   })
   
   result =  result.replace(/&#34;/g, '"')
@@ -56,11 +63,12 @@ JadeBlock.prototype.filterHandlebars = function (){
   return result
 }
 
-function JadeLine(line, level, lineBefore) {
-  this.line = line   
-  this.level = level 
-  this.newLevel = level
-  this.lineBefore = lineBefore
+function JadeLine(line, args) {
+  this.line = line
+  this.level = args.level || ''
+  this.newLevel = args.level
+  this.lineBefore = args.lineBefore || ''
+  this.markdownBlock = args.markdownBlock || false
 }
 
 JadeLine.prototype.preProcess = function (){
@@ -68,22 +76,30 @@ JadeLine.prototype.preProcess = function (){
 }
 
 JadeLine.prototype.tagFilters = function (){
-  
   if (this.line.indexOf('| {{#') > -1) {
     // Open tag
     var p1 = this.line.indexOf('#'),
-        p2 = this.line.indexOf(' ', p1)
+        p2 = this.line.indexOf('}', p1)
     this.tag = this.line.substring(p1+1, p2)
     this.newLevel += 1
-    this.line = this.line.replace('| {{#', '')
-                         .replace('}}','')
+    if (this.tag.indexOf('markdown') > -1) {
+      this.markdownBlock = true
+      this.line = this.line.replace('| {{#', ':')
+                           .replace('}}','')                           
+    } else {
+      this.line = this.line.replace('| {{#', '')
+                           .replace('}}','')
+    }    
   } else if (this.line.indexOf('| {{/')  > -1) {
     // Close tag
     var p1 = this.line.indexOf('/'),
-        p2 = this.line.indexOf(' ', p1)
+        p2 = this.line.indexOf('}', p1)
     this.tag = this.line.substring(p1+1, p2)
     this.newLevel -= 1
     this.line = ''
+    if (this.tag.indexOf('markdown') > -1) {
+      this.markdownBlock = false
+    }
   } else if (this.line.indexOf('| {{else}}')  > -1) {
     // else tag
     this.line = this.line.replace('  | {{','')
@@ -97,6 +113,9 @@ JadeLine.prototype.tagFilters = function (){
     var leadingSpaces = this.getLeadingSpaces(this.lineBefore) + '  ' 
     this.line = this.line.replace('{{&#62; ', '\r\n' + leadingSpaces + '+')
                           .replace('}}','')
+  } else if (this.markdownBlock && this.line.indexOf('| ') > -1) {
+    // Inside markdown block    
+    this.line = this.line.replace('| ', '')
   }
   
   return this
