@@ -116,6 +116,10 @@ JadeLine.prototype.tagFilters = function (){
   } else if (this.markdownBlock && this.line.indexOf('| ') > -1) {
     // Inside markdown block    
     this.line = this.line.replace('| ', '')
+  } else if (this.line.indexOf('#{{') > -1 || this.line.indexOf('.{{') > -1) {
+    // Divs with id #{{ or class as .{{
+    this.line = convertDivId(this.line)
+    this.line = convertDivClasses(this.line)
   }
   
   return this
@@ -147,4 +151,50 @@ JadeLine.prototype.getLeadingSpaces = function (str) {
     result += ' '
   }
   return result
+}
+
+function convertDivId(str) {
+  if (str && str.indexOf('#{{') > -1) {
+    var p1 = str.indexOf('#{{'),
+        p2 = str.indexOf('}}', p1),        
+        id = str.substring(p1+1, p2+2),
+        str = str.replace('#' + id, 'div'),
+        openBracket = str.indexOf('(', p2)
+    
+    if (openBracket > -1) {
+      str = [str.slice(0, openBracket+1), 'id="' + id + '", ', str.slice(openBracket+1)].join('')
+    } else {
+      str = str + ' (id="' + id + '")'
+    }
+  }
+  return str
+}
+
+function convertDivClasses(str) {
+  if (str && str.indexOf('.{{') > -1) {
+    var p1 = str.indexOf('.{{'),    
+        p2 = p1        
+        
+    while (p2 < str.length && str[p2++] !== ' ') { }
+    
+    var openBracket = str.indexOf('(', p2)
+    
+    classes = str.substring(p1+1, p2)
+    
+    if (str.indexOf('div') > -1) {
+      str = str.replace('.' + classes, '')
+    } else {
+      str = str.replace('.' + classes, 'div')
+    }    
+    
+    openBracket = str.indexOf('(')
+    var trimClasses = classes.replace(/\./g, ' ')
+    
+    if (openBracket > -1) {
+      str = [str.slice(0, openBracket+1), 'class="' + trimClasses + '", ', str.slice(openBracket+1)].join('')
+    } else {
+      str = str + ' (class="' + trimClasses + '")'
+    }
+  }
+  return str
 }
