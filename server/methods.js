@@ -164,7 +164,7 @@ function convertDivId(str) {
     if (openBracket > -1) {
       str = [str.slice(0, openBracket+1), 'id="' + id + '", ', str.slice(openBracket+1)].join('')
     } else {
-      str = str + ' (id="' + id + '")'
+      str = str + '(id="' + id + '")'
     }
   }
   return str
@@ -193,7 +193,7 @@ function convertDivClasses(str) {
     if (openBracket > -1) {
       str = [str.slice(0, openBracket+1), 'class="' + trimClasses + '", ', str.slice(openBracket+1)].join('')
     } else {
-      str = str + ' (class="' + trimClasses + '")'
+      str = str + '(class="' + trimClasses + '")'
     }
   }
   return str
