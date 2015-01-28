@@ -1,10 +1,10 @@
 Meteor.methods({
   'html2jade': function (html, mcheck) { 
     
-    Future = Meteor.require('fibers/future')
-    Meteor.require('contextify')
+    Future = Meteor.npmRequire('fibers/future')
+    Meteor.npmRequire('contextify')
     
-    var html2jade = Meteor.require('html2jade')
+    var html2jade = Meteor.npmRequire('html2jade')
     var fut = new Future()
     
     html2jade.convertHtml(html, {double: true, donotencode: true}, function (err, jade) {

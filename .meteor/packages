@@ -10,6 +10,9 @@ jquery
 underscore
 stylus
 bootstrap
-jade
-npm
 spiderable
+mquandalle:jade
+meteorhacks:npm
+
+
+npm-container
