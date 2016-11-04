@@ -3,16 +3,16 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-standard-app-packages
-autopublish
-insecure
-jquery
-underscore
-stylus
+standard-app-packages@1.0.9
+autopublish@1.0.7
+insecure@1.0.7
+jquery@1.11.10
+underscore@1.0.10
+stylus@2.513.6
 bootstrap
-spiderable
+spiderable@1.0.14-release-testing.0
 mquandalle:jade
 meteorhacks:npm
-
-
-npm-container
+standard-minifier-css
+standard-minifier-js
+shell-server
