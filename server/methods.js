@@ -2,7 +2,7 @@ Meteor.methods({
   'html2jade': function (html, mcheck) { 
     
     Future = Meteor.npmRequire('fibers/future')
-    Meteor.npmRequire('contextify')
+    //Meteor.npmRequire('contextify')
     
     var html2jade = Meteor.npmRequire('html2jade')
     var fut = new Future()

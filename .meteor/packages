@@ -12,7 +12,12 @@ stylus@2.513.6
 bootstrap
 spiderable@1.0.14-release-testing.0
 mquandalle:jade
-meteorhacks:npm
 standard-minifier-css
 standard-minifier-js
 shell-server
+
+
+meteorhacks:npm
+
+
+npm-container

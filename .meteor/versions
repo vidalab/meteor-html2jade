@@ -48,6 +48,7 @@ mongo@1.1.9_1
 mongo-id@1.0.6
 mquandalle:jade@0.4.9
 mquandalle:jade-compiler@0.4.5
+npm-container@1.2.0
 npm-mongo@1.4.45
 observe-sequence@1.0.14
 ordered-dict@1.0.9
