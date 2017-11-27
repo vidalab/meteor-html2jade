@@ -13,7 +13,9 @@ Convert HTML to Jade, process Meteor Handlebars tags (no spacing in between):
     git clone https://github.com/vidalab/meteor-html2jade.git
     cd meteor-html2jade
     mrt
-    
+
+You need meteorite (mrt) tool to run this: https://github.com/oortcloud/meteorite.
+
 ### License
 [MIT License](http://www.opensource.org/licenses/MIT)
 
